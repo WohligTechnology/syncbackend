@@ -54,11 +54,12 @@ class Welcome extends CI_Controller {
     }
     public function servertolocal() {
         $timestamp = $this->input->get_post('timestamp');
+        
         $limit = $this->input->get_post('limit');
         if ($limit == "") {
             $limit = 50;
         }
-        $query = $this->db->query("SELECT `user` as `id`,`name`,`email`,`timestamp`,`type` FROM (SELECT `userslog`.`user`,`users`.`name`,`users`.`email`, `userslog`.`timestamp`, `userslog`.`type` FROM `userslog` LEFT OUTER JOIN `users` ON `users`.`id`=`userslog`.`user` WHERE `userslog`.`timestamp` > '$timestamp' ORDER BY `userslog`.`timestamp` DESC) as `tab1` GROUP BY `tab1`.`user` ORDER BY `tab1`.`timestamp` ASC LIMIT 0,$limit");
+        $query = $this->db->query("SELECT `user` as `id`,`name`,`email`,`timestamp` as `timestamp` ,`type` FROM (SELECT `userslog`.`user`,`users`.`name`,`users`.`email`, `userslog`.`timestamp`, `userslog`.`type` FROM `userslog` LEFT OUTER JOIN `users` ON `users`.`id`=`userslog`.`user` WHERE `userslog`.`timestamp` > '$timestamp' ORDER BY `userslog`.`timestamp` DESC) as `tab1` GROUP BY `tab1`.`user` ORDER BY `tab1`.`timestamp` ASC LIMIT 0,$limit");
         if ($query->num_rows() > 0) {
             $data["message"] = $query->result();
         } else {
