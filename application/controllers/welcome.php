@@ -41,7 +41,7 @@ class Welcome extends CI_Controller {
            {
              $this->db->query("INSERT INTO `users` (`id`, `name`, `email`) VALUES (NULL, '$name', '$email')");
              $id = $this->db->insert_id();
-             $this->db->query("INSERT INTO `userslog` (`id`,`user`, `timestamp`, `type`) VALUES (NULL,'$id', $timestamp, '1')");
+             $this->db->query("INSERT INTO `userslog` (`id`,`user`, `timestamp`, `type`) VALUES (NULL,'$id', '$timestamp', '1')");
              $return = new stdClass();
              $return->id = $id;
              $return->timestamp=$timestamp;
@@ -53,7 +53,7 @@ class Welcome extends CI_Controller {
              $this->db->query("UPDATE `users` SET `name`='$name', `email`= '$email' WHERE `id`='$id'");
              $changes = $this->db->affected_rows();
              if ($changes > 0) {
-                 $this->db->query("INSERT INTO `userslog` (`id`,`user`, `timestamp`, `type`) VALUES (NULL,'$id', $timestamp, '2') ");
+                 $this->db->query("INSERT INTO `userslog` (`id`,`user`, `timestamp`, `type`) VALUES (NULL,'$id', '$timestamp', '2') ");
                  $return = new stdClass();
                  $return->result = true;
                  $return->timestamp=$timestamp;
@@ -71,7 +71,7 @@ class Welcome extends CI_Controller {
              $this->db->query("DELETE FROM `users` WHERE `id`='$id'");
              $changes = $this->db->affected_rows();
              if ($changes > 0) {
-                 $this->db->query("INSERT INTO `userslog` (`id`,`user`, `timestamp`, `type`) VALUES (NULL,'$id', $timestamp, '3') ");
+                 $this->db->query("INSERT INTO `userslog` (`id`,`user`, `timestamp`, `type`) VALUES (NULL,'$id', '$timestamp', '3') ");
                  $return = new stdClass();
                  $return->result = true;
                  $return->timestamp=$timestamp;
