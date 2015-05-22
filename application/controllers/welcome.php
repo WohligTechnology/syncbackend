@@ -15,6 +15,61 @@ class Welcome extends CI_Controller {
      * map to /index.php/welcome/<method_name>
      * @see http://codeigniter.com/user_guide/general/urls.html
      */
+
+     public function localtoserver() {
+       $data = json_decode(file_get_contents('php://input'), true);
+       $user = $data['user'];
+       $name = $data['name'];
+       $email = $data['email'];
+       $timestamp = $data['timestamp'];
+       $type = $data['type'];
+       switch($type)
+       {
+           case 1:
+           {
+             $this->db->query("INSERT INTO `users` (`id`, `name`, `email`) VALUES (NULL, '$name', '$email')");
+             $id = $this->db->insert_id();
+             $this->db->query("INSERT INTO `userslog` (`id`,`user`, `timestamp`, `type`) VALUES (NULL,'$id', CURRENT_TIMESTAMP, '1')");
+             $return = new stdClass();
+             $return->id = $id;
+             $data["message"] = $return;
+           }
+           break;
+           case 2:
+           {
+             $this->db->query("UPDATE `users` SET `name`='$name', `email`= '$email' WHERE `id`='$id'");
+             $changes = $this->db->affected_rows();
+             if ($changes > 0) {
+                 $this->db->query("INSERT INTO `userslog` (`id`,`user`, `timestamp`, `type`) VALUES (NULL,'$id', CURRENT_TIMESTAMP, '2') ");
+                 $return = new stdClass();
+                 $return->id = true;
+                 $data["message"] = $return;
+             } else {
+                 $return = new stdClass();
+                 $return->id = false;
+                 $data["message"] = $return;
+             }
+           }
+           break;
+           case 3 {
+             $this->db->query("DELETE FROM `users` WHERE `id`='$id'");
+             $changes = $this->db->affected_rows();
+             if ($changes > 0) {
+                 $this->db->query("INSERT INTO `userslog` (`id`,`user`, `timestamp`, `type`) VALUES (NULL,'$id', CURRENT_TIMESTAMP, '3') ");
+                 $return = new stdClass();
+                 $return->id = true;
+                 $data["message"] = $return;
+             } else {
+                 $return = new stdClass();
+                 $return->id = false;
+                 $data["message"] = $return;
+             }
+           }
+           break;
+         }
+         $this->load->view("json", $data);
+     }
+
     public function localtoserver_create() {
         $name = $this->input->get_post("name");
         $email = $this->input->get_post("email");
@@ -54,7 +109,7 @@ class Welcome extends CI_Controller {
     }
     public function servertolocal() {
         $timestamp = $this->input->get_post('timestamp');
-        
+
         $limit = $this->input->get_post('limit');
         if ($limit == "") {
             $limit = 50;
