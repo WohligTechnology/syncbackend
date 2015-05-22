@@ -24,11 +24,9 @@ class Welcome extends CI_Controller {
        $timestamp = $data['timestamp'];
        $type = $data['type'];
        $id = $data['serverid'];
-       if(!($id>0) && $type==3)
-       {
-         $type=4;
-       }
-       else if(!($id>0))
+       $id2 = $data['serverid2'];
+
+       if(!($id>0) AND $type==2)
        {
          $type=1;
        }
@@ -68,10 +66,10 @@ class Welcome extends CI_Controller {
            break;
            case 3:
             {
-             $this->db->query("DELETE FROM `users` WHERE `id`='$id'");
+             $this->db->query("DELETE FROM `users` WHERE `id`='$id2'");
              $changes = $this->db->affected_rows();
              if ($changes > 0) {
-                 $this->db->query("INSERT INTO `userslog` (`id`,`user`, `timestamp`, `type`) VALUES (NULL,'$id', '$timestamp', '3') ");
+                 $this->db->query("INSERT INTO `userslog` (`id`,`user`, `timestamp`, `type`) VALUES (NULL,'$id2', '$timestamp', '3') ");
                  $return = new stdClass();
                  $return->result = true;
                  $return->timestamp=$timestamp;
